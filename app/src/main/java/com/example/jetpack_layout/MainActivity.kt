@@ -7,12 +7,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -25,13 +38,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import androidx.compose.runtime.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent{
-            Scaffold { innerPadding ->
-                Surface (
+            Scaffold (
+                topBar = { TopBarComposable() }) {
+                innerPadding -> Surface (
                     modifier = Modifier.padding(innerPadding)) {
                     ListViewComposable()
                 }
@@ -40,21 +55,93 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListViewComposable(modifier: Modifier = Modifier) {
+fun TopBarComposable() {
+    var selectedIndex by remember { mutableStateOf(0) }
+
     Column {
-        ListItemComposable(
-            modifier = Modifier,
-            name = "John Doe",
-            date = "Today",
-            message = "Hello, how are you?",
-            number = 8
+        TopAppBar(
+            title = {
+                Text(
+                    modifier = Modifier.padding(top = 16.dp),
+                    text = "WhatsApp",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                ) },
+            actions = {
+                IconButton(modifier = Modifier.padding(top = 8.dp), onClick = { }) {
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
+                }
+                IconButton(modifier = Modifier.padding(top = 8.dp), onClick = { }) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "More", tint = Color.White)
+                }
+            },
+            modifier = Modifier.height(110.dp),
+            colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color(0xFF075E54))
         )
+
+        TabRow(
+            selectedTabIndex = selectedIndex,
+            containerColor = Color(0xFF075E54),
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.tabIndicatorOffset(tabPositions[selectedIndex]),
+                    color = Color.White
+                )
+            },
+        ) {
+            Tab(selected = selectedIndex == 0, onClick = {selectedIndex = 0}) {
+                Text(
+                    text = "Conversas",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+            }
+
+            Tab(selected = selectedIndex == 1, onClick = {selectedIndex = 1}) {
+                Text(
+                    text = "Status",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+            }
+
+            Tab(selected = selectedIndex == 2, onClick = {selectedIndex = 2}) {
+                Text(
+                    text = "Chamadas",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun ListItemComposable(modifier: Modifier = Modifier, name: String, date: String, message: String, number: Int) {
+fun BadgeComposable(number: Int) {
+    if (number > 0) {
+        Surface(
+            color = Color.Green,
+            contentColor = Color.White,
+            shape = CircleShape,
+            modifier = Modifier.padding(4.dp)
+        ) {
+            Text(
+                text = number.toString(),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun ListItemComposable(name: String, date: String, message: String, number: Int) {
     Row (
         Modifier.
             padding(horizontal = 12.dp, vertical = 8.dp)
@@ -108,20 +195,14 @@ fun ListItemComposable(modifier: Modifier = Modifier, name: String, date: String
 }
 
 @Composable
-fun BadgeComposable(number: Int) {
-    if (number > 0) {
-        Surface(
-            color = Color.Green,
-            contentColor = Color.White,
-            shape = CircleShape,
-            modifier = Modifier.padding(4.dp)
-        ) {
-            Text(
-                text = number.toString(),
-                fontSize = 12.sp,
-                modifier = Modifier.padding(horizontal = 4.dp)
-            )
-        }
+fun ListViewComposable() {
+    Column {
+        ListItemComposable(
+            name = "John Doe",
+            date = "Today",
+            message = "Hello, how are you?",
+            number = 8
+        )
     }
 }
 
@@ -132,9 +213,11 @@ fun BadgeComposable(number: Int) {
 )
 
 @Composable
-fun ListViewComposablePreview() {
-    Scaffold { innerPadding ->
-        Surface (modifier = Modifier.padding(innerPadding)) {
+fun Preview() {
+    Scaffold(
+        topBar = { TopBarComposable() }
+    ) { innerPadding ->
+        Surface(modifier = Modifier.padding(innerPadding)) {
             ListViewComposable()
         }
     }
