@@ -6,21 +6,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +19,7 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarComposable() {
-    var selectedIndex by remember { mutableStateOf(0) }
+    var selectedIndex by remember { mutableIntStateOf(0) }
 
     Column {
         TopAppBar(
@@ -59,13 +47,13 @@ fun TopBarComposable() {
             selectedTabIndex = selectedIndex,
             containerColor = Color(0xFF075E54),
             indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
+                TabRowDefaults.SecondaryIndicator(
                     Modifier.tabIndicatorOffset(tabPositions[selectedIndex]),
                     color = Color.White
                 )
             },
         ) {
-            Tab(selected = selectedIndex == 0, onClick = {selectedIndex = 0}) {
+            Tab(selected = selectedIndex == 0, onClick = { selectedIndex = 0 }) {
                 Text(
                     text = "Conversas",
                     color = Color.White,
@@ -74,7 +62,7 @@ fun TopBarComposable() {
                 )
             }
 
-            Tab(selected = selectedIndex == 1, onClick = {selectedIndex = 1}) {
+            Tab(selected = selectedIndex == 1, onClick = { selectedIndex = 1 }) {
                 Text(
                     text = "Status",
                     color = Color.White,
@@ -83,7 +71,7 @@ fun TopBarComposable() {
                 )
             }
 
-            Tab(selected = selectedIndex == 2, onClick = {selectedIndex = 2}) {
+            Tab(selected = selectedIndex == 2, onClick = { selectedIndex = 2 }) {
                 Text(
                     text = "Chamadas",
                     color = Color.White,
